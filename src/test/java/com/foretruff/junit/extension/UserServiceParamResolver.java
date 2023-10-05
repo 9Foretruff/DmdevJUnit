@@ -1,5 +1,6 @@
 package com.foretruff.junit.extension;
 
+import com.foretruff.junit.dao.UserDao;
 import com.foretruff.junit.service.UserService;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -14,6 +15,6 @@ public class UserServiceParamResolver implements ParameterResolver {
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return new UserService();
+        return new UserService(new UserDao());
     }
 }

@@ -1,5 +1,6 @@
 package com.foretruff.junit.service;
 
+import com.foretruff.junit.dao.UserDao;
 import com.foretruff.junit.dto.User;
 
 import java.util.*;
@@ -12,12 +13,21 @@ import static java.util.stream.Collectors.toMap;
 public class UserService {
 
     private final List<User> users = new ArrayList<>();
+    private final UserDao userDao;
+
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
+    }
+
+    public boolean delete(Integer userId){
+        return userDao.delete(userId);
+    }
 
     public List<User> getAll() {
         return users;
     }
 
-    public void add(User... users) {
+    public void add(User... users){
        this.users.addAll(Arrays.asList(users));
     }
 

@@ -1,6 +1,7 @@
 package com.foretruff.junit.service;
 
 import com.foretruff.junit.TestBase;
+import com.foretruff.junit.dao.UserDao;
 import com.foretruff.junit.dto.User;
 import com.foretruff.junit.extension.*;
 import org.hamcrest.MatcherAssert;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -38,6 +40,7 @@ public class UserServiceTest extends TestBase {
     private static final User IVAN = User.of(1, "Ivan", "123");
     private static final User PETR = User.of(2, "Petr", "111");
     private UserService userService;
+    private UserDao userDao;
 
     UserServiceTest(TestInfo testInfo) {
         System.out.println();
@@ -51,7 +54,26 @@ public class UserServiceTest extends TestBase {
     @BeforeEach
     void prepare(UserService userService) {
         System.out.println("Before each: " + this);
-        this.userService = userService;
+        this.userDao = Mockito.mock(UserDao.class);
+        this.userService = new UserService(userDao);
+    }
+
+    @Test
+    void shouldDeleteExistedUser(){
+        userService.add(IVAN);
+//        Mockito.doReturn(true).when(userDao).delete(IVAN.getId());
+//        Mockito.doReturn(true).when(userDao).delete(Mockito.any());
+
+        Mockito.when(userDao.delete(IVAN.getId()))
+                .thenReturn(true)
+                .thenReturn(false);
+
+        var deleteResult = userService.delete(IVAN.getId());
+        
+        System.out.println(userService.delete(1));
+        System.out.println(userService.delete(1));
+
+        assertThat(deleteResult).isTrue();
     }
 
     @Test
@@ -110,6 +132,7 @@ public class UserServiceTest extends TestBase {
     @DisplayName("test user login functionality")
     @Tag("login")
     class LoginTest {
+
         //@Test
         //@Tag("login")
         //@Disabled("flaky , need to see")
